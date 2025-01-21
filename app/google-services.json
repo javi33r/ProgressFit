@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "191921595347",
+    "project_id": "progressfit-30a6a",
+    "storage_bucket": "progressfit-30a6a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:191921595347:android:62e6f1fc878cd46e22c526",
+        "android_client_info": {
+          "package_name": "com.example.progressfitprueba"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDB0iz2TZ--3LNB4KjkmvodZKevdFOZEI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
