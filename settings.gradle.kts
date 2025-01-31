@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ProgressFitPrueba"
+rootProject.name = "ProgressFit"
 include(":app")
  

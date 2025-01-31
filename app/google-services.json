@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:191921595347:android:62e6f1fc878cd46e22c526",
+        "mobilesdk_app_id": "1:191921595347:android:9f2998c236ed75ff22c526",
         "android_client_info": {
-          "package_name": "com.example.progressfitprueba"
+          "package_name": "com.example.progressfit"
         }
       },
       "oauth_client": [],

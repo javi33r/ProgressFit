@@ -1,4 +1,4 @@
-package com.example.progressfitprueba
+package com.example.progressfit
 
 import android.os.Bundle
 import android.widget.Button

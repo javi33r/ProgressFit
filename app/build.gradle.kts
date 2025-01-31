@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.progressfitprueba"
+    namespace = "com.example.progressfit"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.progressfitprueba"
+        applicationId = "com.example.progressfit"
         minSdk = 24
         targetSdk = 35
         versionCode = 1

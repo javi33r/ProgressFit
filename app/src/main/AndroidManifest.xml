@@ -1,5 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.progressfitprueba">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Configuración de la aplicación -->
     <application
@@ -13,7 +12,7 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
         <!-- Declarar la actividad principal -->
-        <activity android:name=".MainActivity"
+        <activity android:name="com.example.progressfit.MainActivity"
             android:exported="true"> <!-- "exported" es obligatorio para Android 12 o superior -->
             <intent-filter>
                 <!-- Indicar que esta actividad es el punto de entrada de la aplicación -->

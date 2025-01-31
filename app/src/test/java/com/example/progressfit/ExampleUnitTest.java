@@ -1,4 +1,4 @@
-package com.example.progressfitprueba;
+package com.example.progressfit;
 
 import org.junit.Test;
 
