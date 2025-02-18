@@ -1,0 +1,29 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="16dp"
+    android:background="#FFFFFF">
+
+    <Button
+        android:id="@+id/loginButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Iniciar Sesión"
+        android:textSize="18sp"
+        android:backgroundTint="#6200EE"
+        android:textColor="#FFFFFF"
+        android:padding="12dp" />
+
+    <Button
+        android:id="@+id/createAccountButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Crear Cuenta"
+        android:textSize="18sp"
+        android:backgroundTint="#03DAC5"
+        android:textColor="#FFFFFF"
+        android:padding="12dp"
+        android:layout_marginTop="16dp" />
+</LinearLayout>

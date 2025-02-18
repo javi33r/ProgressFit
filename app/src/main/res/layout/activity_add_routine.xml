@@ -1,0 +1,45 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/trainingNameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="¿Qué tipo de entrenamiento quieres añadir?"
+            android:padding="8dp" />
+
+        <Spinner
+            android:id="@+id/dayOfWeekSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/days_of_week"
+            android:layout_marginTop="16dp" />
+
+        <LinearLayout
+            android:id="@+id/exerciseContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <Button
+            android:id="@+id/addExerciseButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Añadir más ejercicios"
+            android:layout_marginTop="16dp" />
+
+        <Button
+            android:id="@+id/saveButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Guardar entrenamiento"
+            android:layout_marginTop="16dp" />
+    </LinearLayout>
+</ScrollView>

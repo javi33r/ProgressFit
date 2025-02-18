@@ -1,6 +1,4 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <!-- Configuración de la aplicación -->
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -11,16 +9,29 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
-        <!-- Declarar la actividad principal -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
         <activity android:name="com.example.progressfit.MainActivity"
-            android:exported="true"> <!-- "exported" es obligatorio para Android 12 o superior -->
+            android:exported="true">
             <intent-filter>
-                <!-- Indicar que esta actividad es el punto de entrada de la aplicación -->
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-    </application>
+        <!-- Declarar LoginActivity -->
+        <activity android:name="com.example.progressfit.LoginActivity"
+            android:exported="true" />
 
+        <!-- Declarar RegisterActivity -->
+        <activity android:name="com.example.progressfit.RegisterActivity"
+            android:exported="true" />
+
+        <!-- Declarar WelcomeActivity -->
+        <activity android:name="com.example.progressfit.WelcomeActivity"
+            android:exported="true" />
+
+    </application>
 </manifest>
