@@ -16,7 +16,6 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        // Referencias a los elementos del layout
         val emailEditText = findViewById<EditText>(R.id.emailEditText)
         val passwordEditText = findViewById<EditText>(R.id.passwordEditText)
         val loginButton = findViewById<Button>(R.id.loginButton)
@@ -26,24 +25,27 @@ class LoginActivity : AppCompatActivity() {
             val password = passwordEditText.text.toString().trim()
 
             if (email.isNotEmpty() && password.isNotEmpty()) {
-                db.collection("users").whereEqualTo("email", email).whereEqualTo("password", password)
+                db.collection("users")
+                    .whereEqualTo("email", email)
+                    .whereEqualTo("password", password)
                     .get()
                     .addOnSuccessListener { documents ->
                         if (documents.isEmpty) {
-                            Toast.makeText(this, "Email o contraseña incorrectos.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, "Credenciales incorrectas", Toast.LENGTH_SHORT).show()
                         } else {
-                            val nombre = documents.documents[0].getString("nombre")
+                            val userId = documents.documents[0].getLong("id")?.toString() ?: ""
+                            val nombre = documents.documents[0].getString("nombre") ?: "Usuario"
+
                             val intent = Intent(this, WelcomeActivity::class.java).apply {
-                                putExtra("nombreUsuario", nombre)
+                                putExtra("USER_ID", userId)
+                                putExtra("NOMBRE", nombre)
                             }
                             startActivity(intent)
+                            finish()
                         }
                     }
-                    .addOnFailureListener { e ->
-                        Toast.makeText(this, "Error al iniciar sesión: ${e.message}", Toast.LENGTH_SHORT).show()
-                    }
             } else {
-                Toast.makeText(this, "Por favor, completa todos los campos.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Complete todos los campos", Toast.LENGTH_SHORT).show()
             }
         }
     }

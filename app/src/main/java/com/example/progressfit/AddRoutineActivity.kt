@@ -2,67 +2,89 @@ package com.example.progressfit
 
 import android.os.Bundle
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class AddRoutineActivity : AppCompatActivity() {
 
     private val db = FirebaseFirestore.getInstance()
-    private val auth = FirebaseAuth.getInstance()
-    private val exerciseList = mutableListOf<Map<String, String>>() // Lista para almacenar los ejercicios dinámicos
+    private lateinit var userId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_routine)
 
-        val trainingName = findViewById<EditText>(R.id.trainingNameEditText)
+        userId = intent.getStringExtra("USER_ID") ?: ""
         val exerciseContainer = findViewById<LinearLayout>(R.id.exerciseContainer)
         val addExerciseButton = findViewById<Button>(R.id.addExerciseButton)
         val saveButton = findViewById<Button>(R.id.saveButton)
 
-        // Añadir un nuevo ejercicio dinámicamente
+        repeat(4) { addExerciseFields(exerciseContainer) }
+
         addExerciseButton.setOnClickListener {
             addExerciseFields(exerciseContainer)
         }
 
-        // Guardar rutina en Firebase
         saveButton.setOnClickListener {
-            val trainingNameText = trainingName.text.toString().trim()
-            val dayOfWeek = findViewById<Spinner>(R.id.dayOfWeekSpinner).selectedItem.toString()
+            val exercises = mutableListOf<Map<String, String>>()
 
-            if (trainingNameText.isNotEmpty() && exerciseList.isNotEmpty()) {
-                val userId = auth.currentUser?.uid ?: ""
-                val dayRef = db.collection("rutinas").document(userId).collection(dayOfWeek)
+            for (i in 0 until exerciseContainer.childCount) {
+                val view = exerciseContainer.getChildAt(i)
+                val nombre = view.findViewById<EditText>(R.id.exerciseNameEditText).text.toString()
+                val peso = view.findViewById<EditText>(R.id.exerciseWeightEditText).text.toString()
+                val reps = view.findViewById<EditText>(R.id.exerciseRepsEditText).text.toString()
 
-                for (exercise in exerciseList) {
-                    dayRef.add(exercise)
+                if (nombre.isNotEmpty()) {
+                    exercises.add(mapOf(
+                        "nombre" to nombre,
+                        "peso" to peso.ifEmpty { "0" },
+                        "repeticiones" to reps.ifEmpty { "0" }
+                    ))
                 }
+            }
 
-                Toast.makeText(this, "Entrenamiento guardado para $dayOfWeek", Toast.LENGTH_SHORT).show()
-                finish()
+            if (exercises.isNotEmpty()) {
+                showDaySelectionDialog(exercises)
             } else {
-                Toast.makeText(this, "Por favor, completa todos los campos.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Añade al menos un ejercicio", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    // Función para añadir recuadros dinámicamente
+    private fun showDaySelectionDialog(exercises: List<Map<String, String>>) {
+        val days = resources.getStringArray(R.array.dias_semana)
+        AlertDialog.Builder(this)
+            .setTitle("Seleccionar día")
+            .setSingleChoiceItems(days, -1) { dialog, which ->
+                val selectedDay = days[which]
+                saveExercises(selectedDay, exercises)
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun saveExercises(day: String, exercises: List<Map<String, String>>) {
+        val batch = db.batch()
+        val dayRef = db.collection("rutinas").document(userId).collection(day)
+
+        exercises.forEach { exercise ->
+            val newDocRef = dayRef.document()
+            batch.set(newDocRef, exercise)
+        }
+
+        batch.commit()
+            .addOnSuccessListener {
+                Toast.makeText(this, "Rutina guardada para $day", Toast.LENGTH_SHORT).show()
+                finish()
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
     private fun addExerciseFields(container: LinearLayout) {
         val exerciseView = layoutInflater.inflate(R.layout.item_exercise, null)
-
-        val exerciseName = exerciseView.findViewById<EditText>(R.id.exerciseNameEditText)
-        val exerciseWeight = exerciseView.findViewById<EditText>(R.id.exerciseWeightEditText)
-        val exerciseReps = exerciseView.findViewById<EditText>(R.id.exerciseRepsEditText)
-
         container.addView(exerciseView)
-
-        exerciseList.add(
-            mapOf(
-                "nombre" to (exerciseName.text.toString()),
-                "peso" to (exerciseWeight.text.toString()),
-                "repeticiones" to (exerciseReps.text.toString())
-            )
-        )
     }
 }
