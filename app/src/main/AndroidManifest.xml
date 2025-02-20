@@ -33,6 +33,10 @@
         <activity android:name="com.example.progressfit.WelcomeActivity"
             android:exported="true" />
 
+        <activity android:name=".EditRoutineActivity"
+            android:exported="true" />
+
+
         <activity
             android:name=".AddRoutineActivity"
             android:exported="false"
