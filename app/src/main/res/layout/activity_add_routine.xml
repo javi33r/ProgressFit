@@ -15,13 +15,6 @@
             android:hint="¿Qué tipo de entrenamiento quieres añadir?"
             android:padding="8dp" />
 
-        <Spinner
-            android:id="@+id/dayOfWeekSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:entries="@array/dias_semana"
-            android:layout_marginTop="16dp" />
-
         <LinearLayout
             android:id="@+id/exerciseContainer"
             android:layout_width="match_parent"

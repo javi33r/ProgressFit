@@ -52,17 +52,45 @@ class AddRoutineActivity : AppCompatActivity() {
         }
     }
 
+    private fun checkIfRoutineExists(day: String, exercises: List<Map<String, String>>) {
+        val dayRef = db.collection("rutinas").document(userId).collection(day)
+
+        dayRef.get().addOnSuccessListener { documents ->
+            if (!documents.isEmpty) {
+                // Si ya hay una rutina, mostrar el mensaje de confirmación
+                AlertDialog.Builder(this)
+                    .setTitle("Rutina existente")
+                    .setMessage("Ya tiene una rutina para este día. ¿Quiere reemplazarla?")
+                    .setPositiveButton("Reemplazar") { _, _ ->
+                        saveExercises(day, exercises) // Sobrescribir la rutina
+                    }
+                    .setNegativeButton("Volver") { dialog, _ ->
+                        dialog.dismiss() // No hacer nada y permitir elegir otro día
+                    }
+                    .show()
+            } else {
+                // Si no hay rutina previa, guardar directamente
+                saveExercises(day, exercises)
+            }
+        }.addOnFailureListener {
+            Toast.makeText(this, "Error al verificar la rutina", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private fun showDaySelectionDialog(exercises: List<Map<String, String>>) {
         val days = resources.getStringArray(R.array.dias_semana)
         AlertDialog.Builder(this)
             .setTitle("Seleccionar día")
             .setSingleChoiceItems(days, -1) { dialog, which ->
                 val selectedDay = days[which]
-                saveExercises(selectedDay, exercises)
                 dialog.dismiss()
+
+                // Comprobar si ya existe una rutina para este día
+                checkIfRoutineExists(selectedDay, exercises)
             }
             .show()
     }
+
 
     private fun saveExercises(day: String, exercises: List<Map<String, String>>) {
         val batch = db.batch()

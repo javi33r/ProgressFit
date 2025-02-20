@@ -63,7 +63,7 @@ class EditRoutineActivity : AppCompatActivity() {
 
     private fun saveExercises() {
         val batch = db.batch()
-        val dayRef = db.collection("rutinas").document(userId).collection(dayOfWeek)
+        val dayRef = db.collection("rutinas").document(userId).collection(dayOfWeek) // Usa directamente dayOfWeek
 
         for (i in 0 until exerciseContainer.childCount) {
             val view = exerciseContainer.getChildAt(i)
@@ -93,6 +93,7 @@ class EditRoutineActivity : AppCompatActivity() {
                 Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
+
 
     data class ExerciseData(val id: String, val nombre: String, val peso: String, val repeticiones: String)
 }
