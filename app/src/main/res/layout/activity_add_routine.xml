@@ -1,38 +1,106 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:background="@color/material_dynamic_primary95"
+    android:scrollbars="vertical"
+    android:fillViewport="true"
+    android:padding="24dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingVertical="16dp">
 
-        <EditText
-            android:id="@+id/trainingNameEditText"
+        <!-- Contenedor del campo de texto -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="¿Qué tipo de entrenamiento quieres añadir?"
-            android:padding="8dp" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="24dp"
+            android:padding="8dp"
+            android:background="@color/surface"
+            android:layout_marginHorizontal="4dp"
+            android:layout_marginBottom="8dp">
 
-        <LinearLayout
+            <!-- Icono en ImageView en lugar de startIconDrawable -->
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/buscaractivityadd"
+                android:layout_marginEnd="8dp"
+                app:tint="@color/primary_blue" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:boxBackgroundMode="none"
+                app:endIconMode="clear_text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/trainingNameEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Nombre del entrenamiento"
+                    android:inputType="textCapWords"
+                    android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/exerciseContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" />
+            android:layout_marginTop="24dp"
+            app:cardBackgroundColor="@color/surface"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:strokeColor="@color/primary_blue"
+            app:strokeWidth="1dp">
 
-        <Button
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/addExerciseButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Añadir más ejercicios"
-            android:layout_marginTop="16dp" />
-
-        <Button
-            android:id="@+id/saveButton"
+            style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Guardar entrenamiento"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="16dp"
+            android:text="Añadir ejercicio"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            app:icon="@drawable/aniadiractivityadd"
+            app:iconTint="@color/primary_blue"
+            app:iconSize="24dp"
+            app:rippleColor="@color/secondary_blue"
+            app:strokeColor="@color/primary_blue" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/saveButton"
+            style="@style/Widget.Material3.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/primary_blue"
+            android:text="Guardar"
+            android:textColor="@color/on_primary"
+            android:textSize="16sp"
+            app:cornerRadius="16dp"
+            app:icon="@drawable/guardaractivityadd"
+            app:iconTint="@color/on_primary"
+            app:iconSize="24dp"
+            app:rippleColor="@color/secondary_blue" />
+
     </LinearLayout>
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

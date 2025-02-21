@@ -2,8 +2,8 @@ package com.example.progressfit
 
 import android.os.Bundle
 import android.widget.*
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.card.MaterialCardView
 import com.google.firebase.firestore.FirebaseFirestore
 
 class EditRoutineActivity : AppCompatActivity() {
@@ -12,6 +12,7 @@ class EditRoutineActivity : AppCompatActivity() {
     private lateinit var userId: String
     private lateinit var dayOfWeek: String
     private lateinit var exerciseContainer: LinearLayout
+    private val exercises = mutableListOf<ExerciseData>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,14 +21,15 @@ class EditRoutineActivity : AppCompatActivity() {
         userId = intent.getStringExtra("USER_ID") ?: ""
         dayOfWeek = intent.getStringExtra("DAY_OF_WEEK") ?: ""
 
-        exerciseContainer = findViewById(R.id.exerciseContainer)
+        val cardView = findViewById<MaterialCardView>(R.id.exerciseContainer)
+        exerciseContainer = cardView.getChildAt(0) as LinearLayout
+
         val addExerciseButton = findViewById<Button>(R.id.addExerciseButton)
         val saveButton = findViewById<Button>(R.id.saveButton)
 
         addExerciseButton.setOnClickListener { addExerciseFields(null) }
         saveButton.setOnClickListener { saveExercises() }
 
-        // Cargar los ejercicios ya guardados
         loadExercises()
     }
 
@@ -36,26 +38,33 @@ class EditRoutineActivity : AppCompatActivity() {
             .get()
             .addOnSuccessListener { documents ->
                 for (document in documents) {
-                    val nombre = document.getString("nombre") ?: ""
-                    val peso = document.getString("peso") ?: "0"
-                    val reps = document.getString("repeticiones") ?: "0"
-                    addExerciseFields(ExerciseData(document.id, nombre, peso, reps))
+                    val exercise = ExerciseData(
+                        id = document.id,
+                        nombre = document.getString("nombre") ?: "",
+                        peso = document.getString("peso") ?: "0",
+                        repeticiones = document.getString("repeticiones") ?: "0"
+                    )
+                    exercises.add(exercise)
+                    addExerciseFields(exercise)
                 }
             }
     }
 
-    private fun addExerciseFields(existingExercise: ExerciseData?) {
+    private fun addExerciseFields(exercise: ExerciseData?) {
         val exerciseView = layoutInflater.inflate(R.layout.item_exercise, null)
-
         val nameEditText = exerciseView.findViewById<EditText>(R.id.exerciseNameEditText)
         val weightEditText = exerciseView.findViewById<EditText>(R.id.exerciseWeightEditText)
         val repsEditText = exerciseView.findViewById<EditText>(R.id.exerciseRepsEditText)
+        val deleteButton = exerciseView.findViewById<Button>(R.id.deleteExerciseButton)
 
-        existingExercise?.let {
-            nameEditText.setText(it.nombre)
-            weightEditText.setText(it.peso)
-            repsEditText.setText(it.repeticiones)
-            exerciseView.tag = it.id  // Guardamos el ID del documento de Firestore
+        if (exercise != null) {
+            nameEditText.setText(exercise.nombre)
+            weightEditText.setText(exercise.peso)
+            repsEditText.setText(exercise.repeticiones)
+        }
+
+        deleteButton.setOnClickListener {
+            exerciseContainer.removeView(exerciseView)
         }
 
         exerciseContainer.addView(exerciseView)
@@ -63,7 +72,7 @@ class EditRoutineActivity : AppCompatActivity() {
 
     private fun saveExercises() {
         val batch = db.batch()
-        val dayRef = db.collection("rutinas").document(userId).collection(dayOfWeek) // Usa directamente dayOfWeek
+        val dayRef = db.collection("rutinas").document(userId).collection(dayOfWeek)
 
         for (i in 0 until exerciseContainer.childCount) {
             val view = exerciseContainer.getChildAt(i)
@@ -72,28 +81,21 @@ class EditRoutineActivity : AppCompatActivity() {
             val reps = view.findViewById<EditText>(R.id.exerciseRepsEditText).text.toString()
 
             if (nombre.isNotEmpty()) {
-                val exerciseData = mapOf(
+                val newDocRef = dayRef.document()
+                batch.set(newDocRef, mapOf(
                     "nombre" to nombre,
                     "peso" to peso.ifEmpty { "0" },
                     "repeticiones" to reps.ifEmpty { "0" }
-                )
-
-                val docId = view.tag as? String
-                val docRef = docId?.let { dayRef.document(it) } ?: dayRef.document()
-                batch.set(docRef, exerciseData)
+                ))
             }
         }
 
         batch.commit()
             .addOnSuccessListener {
-                Toast.makeText(this, "Rutina actualizada", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Rutina actualizada para $dayOfWeek", Toast.LENGTH_SHORT).show()
                 finish()
             }
-            .addOnFailureListener { e ->
-                Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
     }
-
 
     data class ExerciseData(val id: String, val nombre: String, val peso: String, val repeticiones: String)
 }

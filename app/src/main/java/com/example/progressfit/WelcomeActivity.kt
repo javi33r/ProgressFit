@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.*
@@ -25,19 +25,16 @@ class WelcomeActivity : AppCompatActivity() {
 
         val welcomeText = findViewById<TextView>(R.id.welcomeText)
         todayRoutine = findViewById(R.id.todayRoutine)
-        val addButton = findViewById<FloatingActionButton>(R.id.addButton)
-        val editButton = findViewById<FloatingActionButton>(R.id.editButton)
+        val addButton = findViewById<ExtendedFloatingActionButton>(R.id.addButton)
+        val editButton = findViewById<ExtendedFloatingActionButton>(R.id.editButton)
 
         welcomeText.text = "Bienvenido, $nombre"
 
-        // Obtener el día de la semana actual
         dayOfWeek = SimpleDateFormat("EEEE", Locale("es", "ES")).format(Date())
             .replaceFirstChar { it.titlecase() }
 
-        // Escuchar cambios en tiempo real para actualizar la rutina del día actual
         listenToRoutineUpdates()
 
-        // Botón para añadir nueva rutina
         addButton.setOnClickListener {
             val intent = Intent(this, AddRoutineActivity::class.java).apply {
                 putExtra("USER_ID", userId)
@@ -45,7 +42,6 @@ class WelcomeActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // Botón para editar rutina existente
         editButton.setOnClickListener {
             val intent = Intent(this, EditRoutineActivity::class.java).apply {
                 putExtra("USER_ID", userId)

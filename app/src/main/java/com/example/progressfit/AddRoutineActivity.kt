@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.card.MaterialCardView
 import com.google.firebase.firestore.FirebaseFirestore
 
 class AddRoutineActivity : AppCompatActivity() {
@@ -16,7 +17,8 @@ class AddRoutineActivity : AppCompatActivity() {
         setContentView(R.layout.activity_add_routine)
 
         userId = intent.getStringExtra("USER_ID") ?: ""
-        val exerciseContainer = findViewById<LinearLayout>(R.id.exerciseContainer)
+        val exerciseCardView = findViewById<MaterialCardView>(R.id.exerciseContainer)
+        val exerciseContainer = exerciseCardView.getChildAt(0) as LinearLayout
         val addExerciseButton = findViewById<Button>(R.id.addExerciseButton)
         val saveButton = findViewById<Button>(R.id.saveButton)
 
@@ -52,29 +54,15 @@ class AddRoutineActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkIfRoutineExists(day: String, exercises: List<Map<String, String>>) {
-        val dayRef = db.collection("rutinas").document(userId).collection(day)
+    private fun addExerciseFields(container: LinearLayout) {
+        val exerciseView = layoutInflater.inflate(R.layout.item_exercise, null)
+        val deleteButton = exerciseView.findViewById<Button>(R.id.deleteExerciseButton)
 
-        dayRef.get().addOnSuccessListener { documents ->
-            if (!documents.isEmpty) {
-                // Si ya hay una rutina, mostrar el mensaje de confirmación
-                AlertDialog.Builder(this)
-                    .setTitle("Rutina existente")
-                    .setMessage("Ya tiene una rutina para este día. ¿Quiere reemplazarla?")
-                    .setPositiveButton("Reemplazar") { _, _ ->
-                        saveExercises(day, exercises) // Sobrescribir la rutina
-                    }
-                    .setNegativeButton("Volver") { dialog, _ ->
-                        dialog.dismiss() // No hacer nada y permitir elegir otro día
-                    }
-                    .show()
-            } else {
-                // Si no hay rutina previa, guardar directamente
-                saveExercises(day, exercises)
-            }
-        }.addOnFailureListener {
-            Toast.makeText(this, "Error al verificar la rutina", Toast.LENGTH_SHORT).show()
+        deleteButton.setOnClickListener {
+            container.removeView(exerciseView)
         }
+
+        container.addView(exerciseView)
     }
 
     private fun showDaySelectionDialog(exercises: List<Map<String, String>>) {
@@ -84,13 +72,31 @@ class AddRoutineActivity : AppCompatActivity() {
             .setSingleChoiceItems(days, -1) { dialog, which ->
                 val selectedDay = days[which]
                 dialog.dismiss()
-
-                // Comprobar si ya existe una rutina para este día
                 checkIfRoutineExists(selectedDay, exercises)
             }
             .show()
     }
 
+    private fun checkIfRoutineExists(day: String, exercises: List<Map<String, String>>) {
+        val dayRef = db.collection("rutinas").document(userId).collection(day)
+
+        dayRef.get().addOnSuccessListener { documents ->
+            if (!documents.isEmpty) {
+                AlertDialog.Builder(this)
+                    .setTitle("Rutina existente")
+                    .setMessage("Ya tiene una rutina para este día. ¿Quiere reemplazarla?")
+                    .setPositiveButton("Reemplazar") { _, _ ->
+                        saveExercises(day, exercises)
+                    }
+                    .setNegativeButton("Volver") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
+            } else {
+                saveExercises(day, exercises)
+            }
+        }
+    }
 
     private fun saveExercises(day: String, exercises: List<Map<String, String>>) {
         val batch = db.batch()
@@ -106,13 +112,5 @@ class AddRoutineActivity : AppCompatActivity() {
                 Toast.makeText(this, "Rutina guardada para $day", Toast.LENGTH_SHORT).show()
                 finish()
             }
-            .addOnFailureListener { e ->
-                Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
-    }
-
-    private fun addExerciseFields(container: LinearLayout) {
-        val exerciseView = layoutInflater.inflate(R.layout.item_exercise, null)
-        container.addView(exerciseView)
     }
 }
