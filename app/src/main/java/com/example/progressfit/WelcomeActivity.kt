@@ -2,6 +2,7 @@ package com.example.progressfit
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -57,8 +58,11 @@ class WelcomeActivity : AppCompatActivity() {
             .addSnapshotListener { snapshots, e ->
                 if (e != null) {
                     todayRoutine.text = "Error al cargar rutina"
+                    Log.e("FirestoreDebug", "Error al obtener rutina: ${e.message}")
                     return@addSnapshotListener
                 }
+
+                Log.d("FirestoreDebug", "Ejercicios recuperados: ${snapshots?.size() ?: 0}")
 
                 val sb = StringBuilder("Tu rutina de hoy:\n\n")
                 for (document in snapshots!!) {
@@ -66,7 +70,8 @@ class WelcomeActivity : AppCompatActivity() {
                         .append("${document.getString("peso")}kg x ")
                         .append("${document.getString("repeticiones")} rep\n")
                 }
-                todayRoutine.text = if (snapshots.isEmpty) "No hay rutina para hoy" else sb.toString()
+                todayRoutine.text = if (snapshots!!.isEmpty) "No hay rutina para hoy" else sb.toString()
             }
+
     }
 }

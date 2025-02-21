@@ -25,8 +25,13 @@ class AddRoutineActivity : AppCompatActivity() {
         repeat(4) { addExerciseFields(exerciseContainer) }
 
         addExerciseButton.setOnClickListener {
-            addExerciseFields(exerciseContainer)
+            if (exerciseContainer.childCount < 25) {
+                addExerciseFields(exerciseContainer)
+            } else {
+                Toast.makeText(this, "No puedes añadir más de 25 ejercicios", Toast.LENGTH_SHORT).show()
+            }
         }
+
 
         saveButton.setOnClickListener {
             val exercises = mutableListOf<Map<String, String>>()
